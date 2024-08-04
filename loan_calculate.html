@@ -1,0 +1,213 @@
+<html>
+  <head>
+    <base href="https://loancalculator.websim.io/" />
+    <title>Loan Calculator</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/11.8.0/math.js"></script>
+    <script src="https://cdn.plot.ly/plotly-2.20.0.min.js"></script>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        line-height: 1.6;
+        color: #333;
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #f4f4f4;
+      }
+      h1,
+      h2 {
+        color: #2c3e50;
+      }
+      .calculator {
+        background-color: #fff;
+        border-radius: 8px;
+        padding: 20px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        margin-bottom: 20px;
+      }
+      label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+      }
+      input[type="number"] {
+        width: 100%;
+        padding: 8px;
+        margin-bottom: 10px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+      }
+      button {
+        background-color: #3498db;
+        color: #fff;
+        border: none;
+        padding: 10px 15px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 16px;
+      }
+      button:hover {
+        background-color: #2980b9;
+      }
+      #result {
+        margin-top: 20px;
+        font-weight: bold;
+      }
+      #chart {
+        width: 100%;
+        height: 400px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>金融计算器</h1>
+
+    <!-- <div class="calculator">
+      <h2>实际利率转化（比如车贷经营利率固定年利息转化为实际年利率）</h2>
+      <label for="total-interest">经营固定年利率</label>
+      <input type="number" id="total-interest" step="0.01" required />
+
+      <label for="num-payments">供应期数</label>
+      <input type="number" id="num-payments" required />
+
+      <button onclick="calculateInterestRate()">计算实际利率</button>
+
+      <div id="interest-rate-result"></div>
+    </div> -->
+
+    <div class="calculator">
+      <h2>可负担房价计算器</h2>
+      <label for="monthly-payment">月供金额:</label>
+      <input type="number" id="monthly-payment" required />
+      <label for="supply-rate">月供比例（%）</label>
+      <input type="number" id="supply-rate" required />
+
+      <label for="yearly-rate">年利率 (%):</label>
+      <input type="number" id="yearly-rate" step="0.01" required />
+
+      <button onclick="calculateLoanTotal()">计算结果</button>
+
+      <div id="loan-total-result"></div>
+    </div>
+
+    <div id="chart"></div>
+
+    <script>
+      function calculateInterestRate() {
+        const yRate = parseFloat(
+          document.getElementById("total-interest").value
+        );
+        const numPayments = parseInt(
+          document.getElementById("num-payments").value
+        );
+        const totalInterest = (1.0 + yRate * numPayments) / (numPayments * 12);
+
+        function equation(rate) {
+          const monthlyRate = rate / 12;
+          const numerator =
+            monthlyRate * Math.pow(1 + monthlyRate, numPayments);
+          const denominator = Math.pow(1 + monthlyRate, numPayments) - 1;
+          return numerator / denominator - totalInterest;
+        }
+
+        const result = brentq(equation, 0.1, 4);
+        document.getElementById(
+          "interest-rate-result"
+        ).innerText = `实际利率: ${(result * 100).toFixed(2)}%`;
+      }
+
+      function brentq(func, a, b) {
+        const tol = 1e-5;
+        let fa = func(a);
+        let fb = func(b);
+
+        if (fa * fb > 0) {
+          throw new Error(
+            "The function must have different signs at the interval endpoints."
+          );
+        }
+
+        let c = a,
+          fc = fa,
+          d,
+          e;
+        let mflag = true;
+
+        for (let iter = 0; iter < 100; iter++) {
+          if (fa !== fc && fb !== fc) {
+            c =
+              (a * fb * fc) / ((fa - fb) * (fa - fc)) +
+              (b * fa * fc) / ((fb - fa) * (fb - fc)) +
+              (c * fa * fb) / ((fc - fa) * (fc - fb));
+          } else {
+            c = b - (fb * (b - a)) / (fb - fa);
+          }
+
+          if (
+            c < (3 * a + b) / 4 ||
+            c > b ||
+            (mflag && Math.abs(c - b) >= Math.abs(b - c) / 2) ||
+            (!mflag && Math.abs(c - b) >= Math.abs(d - e) / 2)
+          ) {
+            c = (a + b) / 2;
+            mflag = true;
+          } else {
+            mflag = false;
+          }
+
+          fc = func(c);
+          e = d;
+          d = b - c;
+
+          if (Math.abs(fc) < tol) {
+            return c;
+          }
+
+          if (fa * fc < 0) {
+            b = c;
+            fb = fc;
+          } else {
+            a = c;
+            fa = fc;
+          }
+
+          if (Math.abs(fa) < Math.abs(fb)) {
+            [a, b] = [b, a];
+            [fa, fb] = [fb, fa];
+          }
+        }
+
+        throw new Error("Brent's method did not converge.");
+      }
+
+      function calculateLoanTotal() {
+        const monthlyPayment = parseFloat(
+          document.getElementById("monthly-payment").value
+        );
+        const yearlyRate =
+          parseFloat(document.getElementById("yearly-rate").value) / 100;
+
+        function equation(totalLoan) {
+          const monthlyRate = yearlyRate / 12;
+          const numerator = monthlyRate * Math.pow(1 + monthlyRate, 360);
+          const denominator = Math.pow(1 + monthlyRate, 360) - 1;
+          return (numerator / denominator) * totalLoan - monthlyPayment;
+        }
+
+        const result = brentq(equation, 1, 100000000);
+        const totalLoan = result;
+
+        const supplyRate = parseFloat(
+          document.getElementById("supply-rate").value
+        );
+
+        const affordableHousePrice = totalLoan / (1 - supplyRate / 100) + 75;
+
+        document.getElementById("loan-total-result").innerHTML = `
+    支付的全部利息: ?${totalLoan.toFixed(2)}<br>
+    可以负担的房价: ?${affordableHousePrice.toFixed(2)}
+  `;
+      }
+    </script>
+  </body>
+</html>
