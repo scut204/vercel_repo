@@ -1,4 +1,5 @@
 <html>
+  <meta http-equiv="Content-Type" content="text/html;" charset="utf-8" />
   <head>
     <base href="https://loancalculator.websim.io/" />
     <title>Loan Calculator</title>
@@ -60,32 +61,32 @@
     </style>
   </head>
   <body>
-    <h1>½ğÈÚ¼ÆËãÆ÷</h1>
+    <h1>é‡‘èè®¡ç®—å™¨</h1>
 
     <!-- <div class="calculator">
-      <h2>Êµ¼ÊÀûÂÊ×ª»¯£¨±ÈÈç³µ´û¾­ÓªÀûÂÊ¹Ì¶¨ÄêÀûÏ¢×ª»¯ÎªÊµ¼ÊÄêÀûÂÊ£©</h2>
-      <label for="total-interest">¾­Óª¹Ì¶¨ÄêÀûÂÊ</label>
+      <h2>å®é™…åˆ©ç‡è½¬åŒ–ï¼ˆæ¯”å¦‚è½¦è´·ç»è¥åˆ©ç‡å›ºå®šå¹´åˆ©æ¯è½¬åŒ–ä¸ºå®é™…å¹´åˆ©ç‡ï¼‰</h2>
+      <label for="total-interest">ç»è¥å›ºå®šå¹´åˆ©ç‡</label>
       <input type="number" id="total-interest" step="0.01" required />
 
-      <label for="num-payments">¹©Ó¦ÆÚÊı</label>
+      <label for="num-payments">ä¾›åº”æœŸæ•°</label>
       <input type="number" id="num-payments" required />
 
-      <button onclick="calculateInterestRate()">¼ÆËãÊµ¼ÊÀûÂÊ</button>
+      <button onclick="calculateInterestRate()">è®¡ç®—å®é™…åˆ©ç‡</button>
 
       <div id="interest-rate-result"></div>
     </div> -->
 
     <div class="calculator">
-      <h2>¿É¸ºµ£·¿¼Û¼ÆËãÆ÷</h2>
-      <label for="monthly-payment">ÔÂ¹©½ğ¶î:</label>
+      <h2>å¯è´Ÿæ‹…æˆ¿ä»·è®¡ç®—å™¨</h2>
+      <label for="monthly-payment">æœˆä¾›é‡‘é¢:</label>
       <input type="number" id="monthly-payment" required />
-      <label for="supply-rate">ÔÂ¹©±ÈÀı£¨%£©</label>
+      <label for="supply-rate">æœˆä¾›æ¯”ä¾‹ï¼ˆ%ï¼‰</label>
       <input type="number" id="supply-rate" required />
 
-      <label for="yearly-rate">ÄêÀûÂÊ (%):</label>
+      <label for="yearly-rate">å¹´åˆ©ç‡ (%):</label>
       <input type="number" id="yearly-rate" step="0.01" required />
 
-      <button onclick="calculateLoanTotal()">¼ÆËã½á¹û</button>
+      <button onclick="calculateLoanTotal()">è®¡ç®—ç»“æœ</button>
 
       <div id="loan-total-result"></div>
     </div>
@@ -113,7 +114,7 @@
         const result = brentq(equation, 0.1, 4);
         document.getElementById(
           "interest-rate-result"
-        ).innerText = `Êµ¼ÊÀûÂÊ: ${(result * 100).toFixed(2)}%`;
+        ).innerText = `å®é™…åˆ©ç‡: ${(result * 100).toFixed(2)}%`;
       }
 
       function brentq(func, a, b) {
@@ -204,8 +205,8 @@
         const affordableHousePrice = totalLoan / (1 - supplyRate / 100) + 75;
 
         document.getElementById("loan-total-result").innerHTML = `
-    Ö§¸¶µÄÈ«²¿ÀûÏ¢: ?${totalLoan.toFixed(2)}<br>
-    ¿ÉÒÔ¸ºµ£µÄ·¿¼Û: ?${affordableHousePrice.toFixed(2)}
+    æ”¯ä»˜çš„å…¨éƒ¨åˆ©æ¯: Â¥${totalLoan.toFixed(2)}<br>
+    å¯ä»¥è´Ÿæ‹…çš„æˆ¿ä»·: Â¥${affordableHousePrice.toFixed(2)}
   `;
       }
     </script>
