@@ -202,11 +202,11 @@
           document.getElementById("supply-rate").value
         );
 
-        const affordableHousePrice = totalLoan / (1 - supplyRate / 100) + 75;
+        const affordableHousePrice = totalLoan / (1 - supplyRate / 100);
 
         document.getElementById("loan-total-result").innerHTML = `
     支付的全部利息: ¥${totalLoan.toFixed(2)}<br>
-    可以负担的房价: ¥${affordableHousePrice.toFixed(2)}
+    可以负担的商贷房价: ¥${affordableHousePrice.toFixed(2)}
   `;
       }
     </script>
